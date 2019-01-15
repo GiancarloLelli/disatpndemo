@@ -9,6 +9,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <StackPanel>
+            <Grid Height="100">
+                <ToggleButton Name="Ciao" />
+            </Grid>
+        </StackPanel>
     </Grid>
 </Page>
