@@ -4,6 +4,7 @@ if (typeof (DISAPN.StoreVisit) == "undefined") { DISAPN.StoreVisit = { __namespa
 DISAPN.StoreVisit.Main = new function () {
     var _self = this;
 
+    _self.Xrm = parent.Xrm != null ? parent.Xrm : null;
     _self.Canvas = null;
     _self.FixedPoints = [];
 
@@ -44,9 +45,34 @@ DISAPN.StoreVisit.Main = new function () {
         }
     }
 
+    _self.DrawRoute = function (data) {
+        if (data.paths.length === 0)
+            return;
+
+        var helpers = DISAPN.Helpers;
+        var ctx = _self.Canvas.getContext("2d");
+        var startingPoint = data.paths[0];
+
+        // Draw small rect to mark starting point
+        ctx.fillStyle = "#FF0000";
+        ctx.fillRect(startingPoint.X, startingPoint.Y, 10, 10);
+
+        for (var i = 0; i < data.paths.length; i++) {
+            var fromDevice = data.paths[i];
+            var toDevice = (i + 1) == data.paths.length ? -1 : i + 1;
+
+            var from = _self.FixedPoints.filter(p => p.DeviceId === fromDevice.deviceId.toUpperCase());
+            var to = _self.FixedPoints.filter(p => p.DeviceId === toDevice.deviceId.toUpperCase());
+
+            helpers.Arrowfactory(ctx, from.X, from.Y, to.X, to.Y);
+        }
+    }
+
     _self.LoadLastRoute = function () {
-        if (Xrm != null) {
-            var userId = Xrm.Page.data.entity.getId();
+        if (_self.Xrm != null) {
+            var userId = _self.Xrm.Page.data.entity.getId().replace('{', '').replace('}', '');
+            var url = "https://disatpndcx.azurewebsites.net/api/Visit/" + userId;
+            $.get(url, _self.DrawRoute);
         }
     }
 }

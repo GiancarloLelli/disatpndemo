@@ -22,6 +22,16 @@ namespace DISATPN.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyOrigin();
+                });
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<DatabaseContext>(opt => opt.UseInMemoryDatabase("DISATPN_Customer_Visits"));
         }
@@ -39,6 +49,7 @@ namespace DISATPN.Web
                 SeedCustomerFakeData(context);
             }
 
+            app.UseCors("AllowAll");
             app.UseMvc();
         }
 

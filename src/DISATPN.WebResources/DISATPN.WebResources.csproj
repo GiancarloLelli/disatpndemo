@@ -36,6 +36,7 @@
     <Content Include="disatpn_\frames\store_visit.html" />
     <Content Include="disatpn_\images\convenience_store.png" />
     <Content Include="disatpn_\scripts\DISAPN.StoreVisit.js" />
+    <Content Include="disatpn_\scripts\DISAPN.Helpers.js" />
     <Content Include="disatpn_\style\style.css" />
   </ItemGroup>
   <ItemGroup />
