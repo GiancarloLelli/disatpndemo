@@ -6,6 +6,7 @@ DISAPN.StoreVisit.Main = new function () {
 
     _self.Xrm = parent.Xrm != null ? parent.Xrm : null;
     _self.Canvas = null;
+    _self.Context = null;
     _self.FixedPoints = [];
 
     _self.OnLoad = function () {
@@ -32,16 +33,17 @@ DISAPN.StoreVisit.Main = new function () {
         _self.FixedPoints.push({ X: 106, Y: 232, Id: "L1", DeviceId: "77D09A9E-48E7-4B53-9285-A214651903DB" });
         _self.FixedPoints.push({ X: 690, Y: 216, Id: "R0", DeviceId: "2DE6F734-D134-45DD-827B-F5E06A4F09E1" });
         _self.FixedPoints.push({ X: 716, Y: 578, Id: "R1", DeviceId: "EA6CA285-9B85-4BDD-A608-A09087D04BA7" });
+        _self.FixedPoints.push({ X: 414, Y: 603, Id: "EX", DeviceId: "Exit" });
     }
 
     _self.DrawFixedPoints = function () {
-        var ctx = _self.Canvas.getContext("2d");
-        ctx.fillStyle = "#000";
-        ctx.font = "20px Georgia"
+        _self.Context = _self.Canvas.getContext("2d");
+        _self.Context.fillStyle = "#000";
+        _self.Context.font = "20px Georgia"
         for (var i = 0; i < _self.FixedPoints.length; i++) {
             var pointItem = _self.FixedPoints[i];
-            ctx.fillRect(pointItem.X, pointItem.Y, 20, 20);
-            ctx.fillText(pointItem.Id, pointItem.X - 1, pointItem.Y - 3);
+            _self.Context.fillRect(pointItem.X, pointItem.Y, 20, 20);
+            _self.Context.fillText(pointItem.Id, pointItem.X - 1, pointItem.Y - 3);
         }
     }
 
@@ -50,21 +52,28 @@ DISAPN.StoreVisit.Main = new function () {
             return;
 
         var helpers = DISAPN.Helpers;
-        var ctx = _self.Canvas.getContext("2d");
-        var startingPoint = data.paths[0];
+        var startingDevice = data.paths[0];
+        var startingPoint = _self.FixedPoints.filter(p => p.DeviceId === startingDevice.deviceId.toUpperCase())[0];
 
         // Draw small rect to mark starting point
-        ctx.fillStyle = "#FF0000";
-        ctx.fillRect(startingPoint.X, startingPoint.Y, 10, 10);
+        _self.Context.fillStyle = "#FF0000";
+        _self.Context.fillRect(startingPoint.X, startingPoint.Y, 20, 20);
 
         for (var i = 0; i < data.paths.length; i++) {
+            var toIndex = (i + 1) == data.paths.length ? -1 : i + 1;
+
             var fromDevice = data.paths[i];
-            var toDevice = (i + 1) == data.paths.length ? -1 : i + 1;
+            var from = _self.FixedPoints.filter(p => p.DeviceId === fromDevice.deviceId.toUpperCase())[0];
+            var to = null;
 
-            var from = _self.FixedPoints.filter(p => p.DeviceId === fromDevice.deviceId.toUpperCase());
-            var to = _self.FixedPoints.filter(p => p.DeviceId === toDevice.deviceId.toUpperCase());
+            if (toIndex > 0) {
+                var toDevice = data.paths[toIndex];
+                to = _self.FixedPoints.filter(p => p.DeviceId === toDevice.deviceId.toUpperCase())[0];
+            } else {
+                to = _self.FixedPoints.filter(p => p.DeviceId === "Exit")[0];
+            }
 
-            helpers.Arrowfactory(ctx, from.X, from.Y, to.X, to.Y);
+            helpers.ArrowFactory(_self.Context, from, to, 10);
         }
     }
 
