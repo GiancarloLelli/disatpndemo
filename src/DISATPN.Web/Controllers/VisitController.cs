@@ -24,7 +24,8 @@ namespace DISATPN.Web.Controllers
         public ActionResult<IEnumerable<StoreVisit>> Get() => Ok(m_context.Visits.OrderByDescending(x => x.Timestamp).ToArray());
 
         [HttpGet("{id}")]
-        public ActionResult<StoreVisit> Get(Guid id) => Ok(m_context.Visits.Include(x => x.Paths).FirstOrDefault(x => x.UserId == id));
+        public ActionResult<StoreVisit> Get(Guid id)
+            => Ok(m_context.Visits.Include(x => x.Paths).OrderByDescending(p => p.Timestamp).FirstOrDefault(x => x.UserId == id));
 
         [HttpPost]
         public ActionResult Post(StoreVisit visitingSession)
