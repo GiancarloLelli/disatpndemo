@@ -1,0 +1,7 @@
+﻿.storeCanvas {
+    background: url(../images/convenience_store.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 800px;
+    height: 700px;
+}

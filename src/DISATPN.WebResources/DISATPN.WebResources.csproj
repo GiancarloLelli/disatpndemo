@@ -32,5 +32,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="frames\store_visit.html" />
+    <Content Include="images\convenience_store.png" />
+    <Content Include="scripts\DISAPN.StoreVisit.js" />
+    <Content Include="style\style.css" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
