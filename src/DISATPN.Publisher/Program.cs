@@ -11,19 +11,20 @@ namespace DISATPN.Publisher
     {
         static void Main(string[] args)
         {
+            var payload = "L1";
+            ushort microsoftId = 0x0006; // See: https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers
             var waiter = new EventWaitHandle(false, EventResetMode.ManualReset);
-            var publisher = new BluetoothLEAdvertisementPublisher();
-
-            var manufacturerData = new BluetoothLEManufacturerData();
-            manufacturerData.CompanyId = 0xFFFE;
 
             var writer = new DataWriter();
-            ushort uuidData = 0x1234;
-            writer.WriteUInt16(uuidData);
+            writer.WriteInt32(payload.Length);
+            writer.WriteString(payload);
 
+            var manufacturerData = new BluetoothLEManufacturerData();
+            manufacturerData.CompanyId = microsoftId;
             manufacturerData.Data = writer.DetachBuffer();
-            publisher.Advertisement.ManufacturerData.Add(manufacturerData);
 
+            var publisher = new BluetoothLEAdvertisementPublisher();
+            publisher.Advertisement.ManufacturerData.Add(manufacturerData);
             publisher.StatusChanged += Publisher_StatusChanged;
             publisher.Start();
 
@@ -33,9 +34,11 @@ namespace DISATPN.Publisher
         private static void Publisher_StatusChanged(BluetoothLEAdvertisementPublisher sender, BluetoothLEAdvertisementPublisherStatusChangedEventArgs args)
         {
             var sb = new StringBuilder();
+            sb.AppendLine($"Handler: {nameof(Publisher_StatusChanged)}");
             sb.AppendLine($"Status: {args.Status.ToString()}");
             sb.AppendLine($"Error: {args.Error.ToString()}");
-            Debug.WriteLine(sb.ToString());
+            sb.AppendLine($"----------------------------------");
+            Console.WriteLine(sb.ToString());
         }
     }
 }
