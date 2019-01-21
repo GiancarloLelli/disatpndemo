@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\DISATPN.Client\Common\Costants.cs" Link="Shared\Costants.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
     <PackageReference Include="System.Runtime.WindowsRuntime" Version="4.3.0" />
     <Reference Include="Windows">
@@ -13,6 +17,10 @@
       <IsWinMDFile>true</IsWinMDFile>
       <Private>false</Private>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Shared\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DISATPN.Client.Common;
+using System;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
@@ -11,16 +12,14 @@ namespace DISATPN.Publisher
     {
         static void Main(string[] args)
         {
-            var payload = "L1";
-            ushort microsoftId = 0x0006; // See: https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers
             var waiter = new EventWaitHandle(false, EventResetMode.ManualReset);
 
             var writer = new DataWriter();
-            writer.WriteInt32(payload.Length);
-            writer.WriteString(payload);
+            writer.WriteInt32(Costants.PAYLOAD.Length);
+            writer.WriteString(Costants.PAYLOAD);
 
             var manufacturerData = new BluetoothLEManufacturerData();
-            manufacturerData.CompanyId = microsoftId;
+            manufacturerData.CompanyId = Costants.MS_ID;
             manufacturerData.Data = writer.DetachBuffer();
 
             var publisher = new BluetoothLEAdvertisementPublisher();

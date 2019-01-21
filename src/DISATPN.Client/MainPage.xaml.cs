@@ -1,4 +1,5 @@
 ﻿using DISATPN.Client.Common;
+using DISATPN.Client.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,8 +25,6 @@ namespace DISATPN.Client
     {
         BluetoothLEAdvertisementWatcher m_watcher;
         IndoorPositioningHelper m_positioning;
-        private const ushort m_msId = 0x0006;
-        private const string m_payload = "L1";
 
         public MainPage()
         {
@@ -38,11 +37,11 @@ namespace DISATPN.Client
             m_positioning = new IndoorPositioningHelper();
 
             var writer = new DataWriter();
-            writer.WriteInt32(m_payload.Length);
-            writer.WriteString(m_payload);
+            writer.WriteInt32(Costants.PAYLOAD.Length);
+            writer.WriteString(Costants.PAYLOAD);
 
             var manufacturerData = new BluetoothLEManufacturerData();
-            manufacturerData.CompanyId = m_msId;
+            manufacturerData.CompanyId = Costants.MS_ID;
             manufacturerData.Data = writer.DetachBuffer();
 
             m_watcher = new BluetoothLEAdvertisementWatcher();
@@ -58,6 +57,7 @@ namespace DISATPN.Client
 
         private void Watcher_Received(BluetoothLEAdvertisementWatcher sender, BluetoothLEAdvertisementReceivedEventArgs args)
         {
+            // Available info
             var timestamp = args.Timestamp;
             var advertisementType = args.AdvertisementType;
             var rssi = args.RawSignalStrengthInDBm;
@@ -66,17 +66,14 @@ namespace DISATPN.Client
             var manufacturerSections = args.Advertisement.ManufacturerData;
             var distance = m_positioning.CalculateDistance(rssi);
 
+            // Add beacon to discovery dictionary
+            m_positioning.Add(address, distance);
+
             foreach (var manufacturerData in manufacturerSections)
             {
-                var data = new byte[manufacturerData.Data.Length];
-
-                using (var reader = DataReader.FromBuffer(manufacturerData.Data))
-                {
-                    reader.ReadBytes(data);
-                }
-
-                var payLoad = BitConverter.ToString(data);
-                var company = manufacturerData.CompanyId.ToString("X");
+                var data = manufacturerData.Data.ReadAsByteArray();
+                var company = manufacturerData.CompanyId.ToString("X4");
+                var payLoad = Encoding.ASCII.GetString(data.Take(Costants.PAYLOAD.Length).ToArray());
                 Debug.WriteLine($"[WATCHER-EVENT] => Handler: {nameof(Watcher_Received)} - Company: 0x{company} - Data: {payLoad}");
             }
         }
