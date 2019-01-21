@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DISATPN.Client.Common;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -22,6 +23,7 @@ namespace DISATPN.Client
     public sealed partial class MainPage : Page
     {
         BluetoothLEAdvertisementWatcher m_watcher;
+        IndoorPositioningHelper m_positioning;
         private const ushort m_msId = 0x0006;
         private const string m_payload = "L1";
 
@@ -33,6 +35,8 @@ namespace DISATPN.Client
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
+            m_positioning = new IndoorPositioningHelper();
+
             var writer = new DataWriter();
             writer.WriteInt32(m_payload.Length);
             writer.WriteString(m_payload);
@@ -60,6 +64,7 @@ namespace DISATPN.Client
             var localName = args.Advertisement.LocalName;
             var address = args.BluetoothAddress;
             var manufacturerSections = args.Advertisement.ManufacturerData;
+            var distance = m_positioning.CalculateDistance(rssi);
 
             foreach (var manufacturerData in manufacturerSections)
             {
