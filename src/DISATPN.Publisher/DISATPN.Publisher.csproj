@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\DISATPN.Client\Common\Costants.cs" Link="Shared\Costants.cs" />
+    <Compile Include="..\DISATPN.Client\Common\Constants.cs" Link="Shared\Constants.cs" />
   </ItemGroup>
 
   <ItemGroup>

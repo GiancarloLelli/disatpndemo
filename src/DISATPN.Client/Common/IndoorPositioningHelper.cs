@@ -42,6 +42,7 @@ namespace DISATPN.Client.Common
         public Point ComputePosition()
         {
             var point = new Point(-1, -1);
+            var ipsManager = new InStoreBeaconPositionManager();
 
             lock (m_sync)
             {
@@ -55,12 +56,13 @@ namespace DISATPN.Client.Common
                     foreach (var beacon in lastActiveBeacons)
                     {
                         var lastMeasure = m_distance[beacon.Key];
+                        var fixedBeacon = ipsManager.FixedPoints[beacon.Key];
 
                         beacons.Add(new IPSBeaconModel
                         {
                             BeaconAddress = beacon.Key,
                             MeasuredDistance = lastMeasure,
-                            BeaconStoreLocation = InStoreBeaconPositionManager.GetPosition(beacon.Key)
+                            BeaconStoreLocation = new Point(fixedBeacon.X, fixedBeacon.Y)
                         });
                     }
 
@@ -97,7 +99,7 @@ namespace DISATPN.Client.Common
             }
         }
 
-        private Point ComputeCoordinates(Point a, Point b, Point c, double dA, double dB, double dC)
+        public Point ComputeCoordinates(Point a, Point b, Point c, double dA, double dB, double dC)
         {
             var W = dA * dA - dB * dB - a.X * a.X - a.Y * a.Y + b.X * b.X + b.Y * b.Y;
             var Z = dB * dB - dC * dC - b.X * b.X - b.Y * b.Y + c.X * c.X + c.Y * c.Y;

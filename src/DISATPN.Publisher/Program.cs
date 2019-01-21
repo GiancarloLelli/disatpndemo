@@ -15,11 +15,11 @@ namespace DISATPN.Publisher
             var waiter = new EventWaitHandle(false, EventResetMode.ManualReset);
 
             var writer = new DataWriter();
-            writer.WriteInt32(Costants.PAYLOAD.Length);
-            writer.WriteString(Costants.PAYLOAD);
+            writer.WriteInt32(Constants.PAYLOAD.Length);
+            writer.WriteString(Constants.PAYLOAD);
 
             var manufacturerData = new BluetoothLEManufacturerData();
-            manufacturerData.CompanyId = Costants.MS_ID;
+            manufacturerData.CompanyId = Constants.MS_ID;
             manufacturerData.Data = writer.DetachBuffer();
 
             var publisher = new BluetoothLEAdvertisementPublisher();

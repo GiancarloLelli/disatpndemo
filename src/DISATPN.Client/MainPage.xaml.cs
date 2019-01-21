@@ -37,11 +37,11 @@ namespace DISATPN.Client
             m_positioning = new IndoorPositioningHelper();
 
             var writer = new DataWriter();
-            writer.WriteInt32(Costants.PAYLOAD.Length);
-            writer.WriteString(Costants.PAYLOAD);
+            writer.WriteInt32(Constants.PAYLOAD.Length);
+            writer.WriteString(Constants.PAYLOAD);
 
             var manufacturerData = new BluetoothLEManufacturerData();
-            manufacturerData.CompanyId = Costants.MS_ID;
+            manufacturerData.CompanyId = Constants.MS_ID;
             manufacturerData.Data = writer.DetachBuffer();
 
             m_watcher = new BluetoothLEAdvertisementWatcher();
@@ -73,7 +73,7 @@ namespace DISATPN.Client
             {
                 var data = manufacturerData.Data.ReadAsByteArray();
                 var company = manufacturerData.CompanyId.ToString("X4");
-                var payLoad = Encoding.ASCII.GetString(data.Take(Costants.PAYLOAD.Length).ToArray());
+                var payLoad = Encoding.ASCII.GetString(data.Take(Constants.PAYLOAD.Length).ToArray());
                 Debug.WriteLine($"[WATCHER-EVENT] => Handler: {nameof(Watcher_Received)} - Company: 0x{company} - Data: {payLoad}");
             }
         }
